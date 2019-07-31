@@ -1,3 +1,5 @@
 #!/bin/bash
 
-docker build --build-arg ALPINE_VERSION=3.8 -f $DOCKERFILE_PATH -t $IMAGE_NAME .
+echo "$DOCKERFILE_PATH"
+
+docker build --build-arg ALPINE_VERSION=3.8 -f alpine -t $IMAGE_NAME .
