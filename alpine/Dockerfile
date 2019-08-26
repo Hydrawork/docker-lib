@@ -1,10 +1,10 @@
 ARG ALPINE_VERSION=3.9
 
 FROM alpine:${ALPINE_VERSION}
+LABEL maintainer="hydrawork <alex@hydra.work>"
 
 ARG RESPOSITORY=mirrors.aliyun.com
-# ARG GLIBC_REPO=https://github.com/sgerrand/alpine-pkg-glibc/releases/download
-ARG GLIBC_REPO=http://172.17.0.1/glibc
+ARG GLIBC_REPO=https://github.com/sgerrand/alpine-pkg-glibc/releases/download
 ARG GLIBC_VERSION=2.29-r0
 ARG LANG=C.UTF-8
 

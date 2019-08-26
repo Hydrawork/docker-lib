@@ -1,9 +1,11 @@
 ARG JAVA_VERSION=8
 
-FROM java:${JAVA_VERSION}
+FROM hydrawork/java:${JAVA_VERSION}
+LABEL maintainer="hydrawork <alex@hydra.work>"
 
+ARG TOMCAT_REPO=http://mirrors.aliyun.com/apache/tomcat
 ARG TOMCAT_MAJOR=8
-ARG TOMCAT_VERSION=8.5.43
+ARG TOMCAT_VERSION=8.5.45
 ARG CATALINA_HOME=/usr/local/tomcat
 
 ENV CATALINA_HOME=${CATALINA_HOME} \
@@ -17,7 +19,7 @@ RUN set -eux; \
 	echo "TOMCAT_NATIVE_LIBDIR=$TOMCAT_NATIVE_LIBDIR" && \
 	echo "PATH=$PATH" && \
 	echo "TOMCAT_VERSION=$TOMCAT_VERSION" && \
-	curl -o tomcat.tar.gz http://mirrors.aliyun.com/apache/tomcat/tomcat-${TOMCAT_MAJOR}/v${TOMCAT_VERSION}/bin/apache-tomcat-${TOMCAT_VERSION}.tar.gz && \
+	curl -o tomcat.tar.gz ${TOMCAT_REPO}/tomcat-${TOMCAT_MAJOR}/v${TOMCAT_VERSION}/bin/apache-tomcat-${TOMCAT_VERSION}.tar.gz && \
 	tar -zxf tomcat.tar.gz && \
 	mv apache-tomcat-$TOMCAT_VERSION/* . && \
 	rmdir apache-tomcat-$TOMCAT_VERSION && \

@@ -1,10 +1,13 @@
-ARG OS_VERSION=3.8
+ARG OS_VERSION=3.9
 
-FROM alpine:${OS_VERSION}-glibc-cn
+FROM hydrawork/alpine:${OS_VERSION}
+LABEL maintainer="hydrawork <alex@hydra.work>"
 
-ARG JAVA_REPO=http://172.17.0.1/java
+ARG JAVA_REPO=http://download.oracle.com/otn-pub/java
 ARG JAVA_VERSION_MAJOR=8
 ARG JAVA_VERSION_MINOR=202
+ARG JAVA_VERSION_BUILD=08
+ARG JAVA_VERSION_SOLT=1961070e4c9b4e26a04e7f5a083f551e
 ARG JAVA_PACKAGE=jdk
 
 ENV JAVA_HOME=/opt/java \
@@ -14,8 +17,9 @@ ENV JAVA_HOME=/opt/java \
 RUN set -ex && \
     apk -U upgrade && \
     apk add java-cacerts && \
-    mkdir /opt && \
-    curl -o /tmp/java.tar.gz ${JAVA_REPO}/${JAVA_VERSION_MAJOR}/${JAVA_PACKAGE}-${JAVA_VERSION_MAJOR}u${JAVA_VERSION_MINOR}-linux-x64.tar.gz && \
+    mkdir -p /opt && \
+    curl -jksSLH "Cookie: oraclelicense=accept-securebackup-cookie" \
+       -o /tmp/java.tar.gz ${JAVA_REPO}/jdk/${JAVA_VERSION_MAJOR}u${JAVA_VERSION_MINOR}-b${JAVA_VERSION_BUILD}/${JAVA_VERSION_SOLT}/${JAVA_PACKAGE}-${JAVA_VERSION_MAJOR}u${JAVA_VERSION_MINOR}-linux-x64.tar.gz && \
     # Install jdk
     gunzip /tmp/java.tar.gz && \
     tar -C /opt -xf /tmp/java.tar && \
@@ -28,7 +32,8 @@ RUN set -ex && \
         cd $JAVA_HOME && rm -fr ./bin && ln -s ./jre/bin ./bin; \
     fi && \
     # Install jce
-    curl -o /tmp/jce_policy.zip ${JAVA_REPO}/${JAVA_VERSION_MAJOR}/jce_policy-${JAVA_VERSION_MAJOR}.zip && \
+    curl -jksSLH "Cookie: oraclelicense=accept-securebackup-cookie" \
+       -o /tmp/jce_policy.zip ${JAVA_REPO}/jce/${JAVA_VERSION_MAJOR}/jce_policy-${JAVA_VERSION_MAJOR}.zip && \
     cd /tmp && unzip /tmp/jce_policy.zip && \
     cp -v /tmp/UnlimitedJCEPolicy*/*.jar $JRE_PATH/lib/security && \
     sed -i s/#networkaddress.cache.ttl=-1/networkaddress.cache.ttl=10/ $JRE_PATH/lib/security/java.security && \
